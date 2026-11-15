@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Painel de Controle ECLSS - Habitat Marte</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 2rem; background: #0f172a; color: #f8fafc; }
+    .card { background: #1e293b; padding: 1.5rem; border-radius: 8px; max-width: 480px; }
+    input, button { padding: 0.5rem; margin-top: 0.5rem; width: 100%; box-sizing: border-box; }
+    button { background: #ea580c; color: white; border: none; cursor: pointer; font-weight: bold; }
+    #mensagem-status { margin-top: 1rem; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Monitoramento ECLSS - Marte</h1>
+    <p>Oxigênio Disponível: <strong id="nivel-oxigenio">1000</strong> kg</p>
+    <p>Água Disponível: <strong id="nivel-agua">2000</strong> L</p>
+
+    <form id="form-oxigenio">
+      <label for="qtd-oxigenio">Solicitar Cota Extra de Oxigênio (kg):</label>
+      <input type="number" id="qtd-oxigenio" name="qtd-oxigenio" min="1" required />
+      <button type="submit" id="btn-solicitar">Solicitar Oxigênio</button>
+    </form>
+
+    <p id="mensagem-status" role="status"></p>
+  </div>
+
+  <script>
+    let estoqueOxigenio = 1000;
+    const form = document.getElementById("form-oxigenio");
+    const nivelEl = document.getElementById("nivel-oxigenio");
+    const statusEl = document.getElementById("mensagem-status");
+
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+      const qtd = Number(document.getElementById("qtd-oxigenio").value);
+      statusEl.textContent = "Processando solicitação...";
+
+      setTimeout(() => {
+        if (qtd <= 0 || isNaN(qtd)) {
+          statusEl.textContent = "Erro: Quantidade inválida.";
+          return;
+        }
+        if (qtd > estoqueOxigenio) {
+          statusEl.textContent = "Alerta de Crise: Estoque de oxigênio insuficiente!";
+          return;
+        }
+        estoqueOxigenio -= qtd;
+        nivelEl.textContent = String(estoqueOxigenio);
+        statusEl.textContent = `Solicitação aprovada: ${qtd} kg liberados.`;
+      }, 250);
+    });
+  </script>
+</body>
+</html>
